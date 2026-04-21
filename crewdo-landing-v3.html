@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="hu" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrewDo - YOURS Creative × MyMins</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=League+Spartan:wght@500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- GSAP & ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/ScrollTrigger.min.js"></script>
+    
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        display: ['"League Spartan"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    colors: {
+                        mymins: {
+                            teal: '#33bdb6',
+                            red: '#f26a70'
+                        },
+                        yours: {
+                            rose: '#bd8786',
+                            white: '#ffffff'
+                        },
+                        zinc: {
+                            950: '#09090b',
+                            900: '#18181b',
+                            800: '#27272a',
+                            100: '#f4f4f5',
+                            50: '#fafafa',
+                        }
+                    },
+                    backgroundImage: {
+                        'hero-gradient': 'linear-gradient(to right, #09090b 0%, #18181b 100%)',
+                        'glass-gradient': 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%)',
+                    },
+                    boxShadow: {
+                        'glass': '0 4px 30px rgba(0, 0, 0, 0.1)',
+                        'diffusion': '0 20px 40px -15px rgba(0,0,0,0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Base Styling applied strictly via Taste Skill constraints -->
+    <style>
+        body { background-color: transparent; color: #18181b; overflow-x: hidden; }
+        .dark-section { background-color: transparent; color: #ffffff; }
+        
+        /* Beams Overlay Effect */
+        @keyframes pulseBeamsOverlay {
+            0%, 100% { opacity: 0.05; }
+            50% { opacity: 0.15; }
+        }
+        .beams-overlay {
+            animation: pulseBeamsOverlay 10s ease-in-out infinite;
+        }
+
+        .liquid-glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+        .liquid-glass-dark {
+            background: rgba(24, 24, 27, 0.05);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(24, 24, 27, 0.1);
+        }
+        .bento-card {
+            background: rgba(24, 24, 27, 0.4) !important;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05) !important;
+            border-radius: 2.5rem;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 20px 40px -15px rgba(0,0,0,0.5) !important;
+            padding: 2.5rem;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+            color: #ffffff;
+        }
+        .bento-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255,255,255,0.15) !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 30px 60px -15px rgba(0,0,0,0.8) !important;
+        }
+        /* Dark Theme Global Text Overrides */
+        .text-zinc-900 { color: #ffffff !important; }
+        .text-zinc-800 { color: #ffffff !important; }
+        .text-zinc-700 { color: #ffffff !important; }
+        .text-zinc-600 { color: #ffffff !important; }
+        .text-zinc-500 { color: #ffffff !important; }
+        .text-zinc-400 { color: #ffffff !important; }
+        .text-zinc-300 { color: #ffffff !important; }
+        .magnetic-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .magnetic-btn:active { transform: translateY(1px) scale(0.98); }
+        .text-gradient-mymins { background: linear-gradient(135deg, #33bdb6, #f26a70); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        /* Marquee Animation */
+        .marquee-container { overflow: hidden; white-space: nowrap; width: 100%; display: flex; }
+        .marquee-content { display: flex; animation: marquee 30s linear infinite; }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        
+
+
+        /* ANIMATED GRADIENT BORDER STYLES */
+        @property --gradient-angle {
+            syntax: "<angle>";
+            initial-value: 0deg;
+            inherits: false;
+        }
+
+        @keyframes gradient-rotate {
+            0% { --gradient-angle: 0deg; }
+            100% { --gradient-angle: 360deg; }
+        }
+
+        .animated-gradient-border {
+            position: relative;
+            background: rgba(39, 39, 42, 0.4); /* bg-zinc-800/40 */
+            backdrop-filter: blur(12px);
+            border-radius: 1rem; /* 16px */
+            /* We remove native border since we use pseudo-element */
+            border: none;
+        }
+
+        .animated-gradient-border::before {
+            content: "";
+            position: absolute;
+            inset: -1.5px;
+            border-radius: calc(1rem + 1.5px);
+            z-index: -1;
+            /* Conic gradient using brand colors: #33bdb6 (Teal) and #f26a70 (Rose) */
+            background: conic-gradient(
+                from var(--gradient-angle),
+                #33bdb6 0%,
+                rgba(51, 189, 182, 0.1) 25%,
+                #f26a70 50%,
+                rgba(242, 106, 112, 0.1) 75%,
+                #33bdb6 100%
+            );
+            animation: gradient-rotate 4s linear infinite;
+            
+            /* Mask composite to only show the border */
+            padding: 1.5px;
+            background-clip: content-box, border-box;
+            
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+        }
+        
+        .animated-gradient-border-hover::before {
+            animation: none;
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+        .animated-gradient-border-hover:hover::before {
+            animation: gradient-rotate 2.5s linear infinite;
+            opacity: 1;
+        }
+
+    </style>
+</head>
+<body class="antialiased font-sans">
+    
+    <!-- Background Beams (Generated by JS) -->
+    <div id="bg-beams-container" class="fixed inset-0 z-[-50] pointer-events-none bg-zinc-950 overflow-hidden">
+        <canvas id="bg-beams-canvas" class="absolute inset-0 w-full h-full" style="filter: blur(20px); opacity: 0.8; mix-blend-mode: screen;"></canvas>
+        <div class="absolute inset-0 bg-zinc-950/5 backdrop-blur-[50px] beams-overlay"></div>
+    </div>
+
+    <!-- 01 - HERO SZEKCIÓ -->
+    <section class="dark-section relative min-h-[100dvh] flex items-center pt-20 pb-24 overflow-hidden" id="hero">
+        
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 w-full relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-8 items-center">
+            
+            <!-- Bal Oldal: Szöveg -->
+            <div class="gsap-hero-left flex flex-col items-start gap-8">
+                <div class="flex items-center gap-4">
+                    <img src="cropped-rovid_logo-feher.png" alt="YOURS Creative" class="h-10 object-contain opacity-90">
+                    <span class="text-zinc-500 font-light text-lg">×</span>
+                    <img src="mymins logo.svg" alt="MyMins" class="h-10 object-contain brightness-0 invert opacity-90">
+                </div>
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full liquid-glass text-xs text-zinc-300 font-medium tracking-wide uppercase">
+                    <span class="w-1.5 h-1.5 rounded-full bg-mymins-teal animate-pulse"></span>
+                    CrewDo csomag
+                </div>
+
+                <h1 class="font-display text-5xl md:text-6xl tracking-tighter leading-[1.05] text-white">
+                    Egy kézben az egész <br />
+                    <span class="relative mt-3 mb-2 block w-fit">
+                        <!-- Dashed border effect -->
+                        <span class="absolute inset-0 -z-10 -m-3">
+                            <span class="absolute inset-0 border-[3px] border-dashed border-mymins-teal/60 bg-zinc-900/50 rounded-2xl"></span>
+                        </span>
+                        <!-- Animated Text -->
+                        <span class="text-mymins-teal inline-block min-w-[200px] text-left font-bold min-h-[1.2em]">
+                            <span id="hero-typewriter"></span><span class="animate-pulse text-white font-normal ml-1">|</span>
+                        </span>
+                    </span>
+                </h1>
+
+                <p class="text-lg md:text-xl text-zinc-400 font-light leading-relaxed max-w-[50ch] mt-4">
+                    Profi shortform tartalmak a figyelemért, stratégiai kampánykezelés a növekedésért. Ez a YOURS x MyMins - CREW-DO növekedési rendszer
+                </p>
+
+                <div class="flex flex-col items-start gap-6 pt-2">
+                    <div class="flex flex-wrap items-center gap-4">
+                        <a href="#form" class="magnetic-btn relative overflow-hidden inline-flex items-center justify-center bg-white font-semibold px-8 py-4 rounded-full group outline outline-1 outline-white/10 shadow-[0_0_30px_rgba(255,255,255,0.1)] transition-all">
+                            <span class="w-[800px] h-[800px] rounded-[100%] absolute bottom-0 left-0 -translate-x-full ease-out duration-700 transition-all translate-y-full mb-9 ml-9 group-hover:ml-0 group-hover:mb-32 group-hover:translate-x-0 bg-mymins-teal"></span>
+                            <span class="relative z-10 w-full text-center text-black transition-colors duration-300 ease-in-out group-hover:text-black">👉 Kérem az árajánlatot</span>
+                        </a>
+                        <a href="#megoldas" class="magnetic-btn relative overflow-hidden inline-flex items-center justify-center bg-white font-semibold px-8 py-4 rounded-full group outline outline-1 outline-white/10 shadow-[0_0_30px_rgba(255,255,255,0.1)] transition-all">
+                            <span class="w-[800px] h-[800px] rounded-[100%] absolute bottom-0 left-0 -translate-x-full ease-out duration-700 transition-all translate-y-full mb-9 ml-9 group-hover:ml-0 group-hover:mb-32 group-hover:translate-x-0 bg-mymins-teal"></span>
+                            <span class="relative z-10 w-full text-center text-black transition-colors duration-300 ease-in-out group-hover:text-black">Megnézem a csomagot <i class="ph ph-arrow-down ml-1"></i></span>
+                        </a>
+                    </div>
+                    
+                    <!-- Social Proof -->
+                    <div class="flex items-center">
+                        <div class="flex -space-x-5">
+                            <div class="w-14 h-14 rounded-full border-2 border-zinc-950 bg-white p-2 flex items-center justify-center overflow-hidden">
+                                <img src="színes ügyfél logók /oc.png" alt="OC" class="w-full h-full object-contain">
+                            </div>
+                            <div class="w-14 h-14 rounded-full border-2 border-zinc-950 bg-white p-2 flex items-center justify-center overflow-hidden">
+                                <img src="színes ügyfél logók /roni abc.png" alt="Roniabc" class="w-full h-full object-contain">
+                            </div>
+                            <div class="w-14 h-14 rounded-full border-2 border-zinc-950 bg-white p-2 flex items-center justify-center overflow-hidden">
+                                <img src="színes ügyfél logók /american interstate.png" alt="i55" class="w-full h-full object-contain">
+                            </div>
+                            <div class="w-14 h-14 rounded-full border-2 border-zinc-950 bg-white p-2 flex items-center justify-center overflow-hidden">
+                                <img src="ügyfél logok/melodiak.svg" alt="Melodiak" class="w-full h-full object-contain">
+                            </div>
+                            <div class="w-14 h-14 rounded-full border-2 border-zinc-950 bg-white p-2 flex items-center justify-center overflow-hidden">
+                                <img src="színes ügyfél logók /revital med.png" alt="Revital Med" class="w-full h-full object-contain">
+                            </div>
+                        </div>
+                        <p class="ml-6 text-sm font-medium text-zinc-400">
+                            Több mint 200 sikeres projekt
+                        </p>
+                    </div>
+                </div>
+
+                <ul class="flex flex-col sm:flex-row gap-4 sm:gap-8 text-sm text-zinc-500 pt-6 border-t border-zinc-800/50 mt-4 w-full">
+                    <li class="flex items-center gap-2"><i class="ph-fill ph-check-circle text-mymins-teal"></i> Azonnali eredmények</li>
+                    <li class="flex items-center gap-2"><i class="ph-fill ph-clock text-yours-rose"></i> Limitált kapacitás</li>
+                    <li class="flex items-center gap-2"><i class="ph-fill ph-phone-call text-mymins-teal"></i> 30 perces ingyenes konzultáció</li>
+                </ul>
+            </div>
+
+            <!-- Jobb Oldal: 2x2 Videó Grid -->
+            <div class="gsap-hero-right relative w-full flex flex-col gap-4">
+
+                <!-- Felső sor: 2 videó -->
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- Videó 1 -->
+                    <div class="relative rounded-2xl overflow-hidden shadow-2xl border border-white/10 group" style="aspect-ratio: 9/16; max-height: 360px;">
+                        <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]">
+                            <source src="crewdo animation.mp4" type="video/mp4">
+                        </video>
+                        <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/70 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-3 left-3 flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-yours-rose animate-pulse"></span>
+                            <span class="text-[10px] text-white font-mono uppercase tracking-wider">YOURS</span>
+                        </div>
+                    </div>
+                    <!-- Videó 2 -->
+                    <div class="relative rounded-2xl overflow-hidden shadow-2xl border border-white/10 group" style="aspect-ratio: 9/16; max-height: 360px;">
+                        <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]">
+                            <source src="crewdo animation.mp4" type="video/mp4">
+                        </video>
+                        <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/70 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-3 left-3 flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-yours-rose animate-pulse"></span>
+                            <span class="text-[10px] text-white font-mono uppercase tracking-wider">YOURS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alsó sor: 2 videó -->
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- Videó 3 -->
+                    <div class="relative rounded-2xl overflow-hidden shadow-2xl border border-white/10 group" style="aspect-ratio: 9/16; max-height: 360px;">
+                        <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]">
+                            <source src="crewdo animation.mp4" type="video/mp4">
+                        </video>
+                        <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/70 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-3 left-3 flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-yours-rose animate-pulse"></span>
+                            <span class="text-[10px] text-white font-mono uppercase tracking-wider">YOURS</span>
+                        </div>
+                    </div>
+                    <!-- Videó 4 -->
+                    <div class="relative rounded-2xl overflow-hidden shadow-2xl border border-white/10 group" style="aspect-ratio: 9/16; max-height: 360px;">
+                        <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]">
+                            <source src="crewdo animation.mp4" type="video/mp4">
+                        </video>
+                        <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/70 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-3 left-3 flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-yours-rose animate-pulse"></span>
+                            <span class="text-[10px] text-white font-mono uppercase tracking-wider">YOURS</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- 02 - STAT SÁV -->
+    <section class="py-12 bg-transparent relative z-10">
+        <div class="absolute inset-0 pointer-events-none" style="background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 1.6rem 1.6rem;"></div>
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid grid-cols-2 lg:grid-cols-4">
+                <!-- Stat 1 -->
+                <div class="flex flex-col items-center text-center px-8 py-4 group">
+                    <span class="font-sans text-5xl lg:text-6xl font-black tracking-tighter text-white leading-none mb-2">
+                        200<span class="text-yours-rose">+</span>
+                    </span>
+                    <span class="text-xs text-zinc-500 font-medium uppercase tracking-[0.15em]">Sikeres ügyfél</span>
+                </div>
+                <!-- Stat 2 -->
+                <div class="flex flex-col items-center text-center px-8 py-4 group">
+                    <span class="font-sans text-5xl lg:text-6xl font-black tracking-tighter text-white leading-none mb-2">
+                        1.5<span class="text-mymins-teal">Mrd</span>
+                    </span>
+                    <span class="text-xs text-zinc-500 font-medium uppercase tracking-[0.15em]">Kezelt büdzsé</span>
+                </div>
+                <!-- Stat 3 -->
+                <div class="flex flex-col items-center text-center px-8 py-4 group">
+                    <span class="font-sans text-5xl lg:text-6xl font-black tracking-tighter text-white leading-none mb-2">
+                        500<span class="text-yours-rose">+</span>
+                    </span>
+                    <span class="text-xs text-zinc-500 font-medium uppercase tracking-[0.15em]">Shortform videó</span>
+                </div>
+                <!-- Stat 4 -->
+                <div class="flex flex-col items-center text-center px-8 py-4 group">
+                    <span class="font-sans text-3xl lg:text-4xl font-black tracking-tighter text-white leading-none mb-2">
+                        Forintra <span class="text-mymins-teal">pontosan</span>
+                    </span>
+                    <span class="text-xs text-zinc-500 font-medium uppercase tracking-[0.1em] mt-2 leading-relaxed">Minden hónapban megmutatjuk mennyit kerestél velünk</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 03 - LOGO SÁV -->
+    <section class="py-16 bg-transparent border-b border-white/5 overflow-hidden relative z-10">
+        <div class="max-w-7xl mx-auto px-6 mb-8">
+            <h3 class="text-sm font-semibold tracking-[0.2em] text-zinc-500 uppercase">VELÜK DOLGOZUNK</h3>
+        </div>
+        <div class="marquee-container">
+            <div class="marquee-content gap-20 px-10 items-center">
+                <!-- Logók sorozata (1. futam) -->
+                <img src="ügyfél logok/Alfa_logo.png" alt="Alfa" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/Beerstro_logo.png" alt="Beerstro" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/ClubHeaven_logo-1.png" alt="Club Heaven" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/Faedra_logo.png" alt="Faedra" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/Roniabc_logo.png" alt="Roni ABC" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/apple4you.svg" alt="Apple4You" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/berlitz.svg" alt="Berlitz" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/derma_web.png" alt="Derma" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/gtx.svg" alt="GTX" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/i55_logo.png" alt="i55" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/mancskonyha.svg" alt="Mancskonyha" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/melodiak.svg" alt="Melodiak" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/myrkl.svg" alt="Myrkl" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/oc_web.png" alt="OC" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/revi.png" alt="Revital Med" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/stopvill.svg" alt="Stopvill" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/vaszonkep-manufaktura.svg" alt="Vászonkép" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                
+                <!-- Logók Ismétlése a folytonossághoz (2. futam) -->
+                <img src="ügyfél logok/Alfa_logo.png" alt="Alfa" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/Beerstro_logo.png" alt="Beerstro" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/ClubHeaven_logo-1.png" alt="Club Heaven" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/Faedra_logo.png" alt="Faedra" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/Roniabc_logo.png" alt="Roni ABC" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/apple4you.svg" alt="Apple4You" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/berlitz.svg" alt="Berlitz" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/derma_web.png" alt="Derma" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/gtx.svg" alt="GTX" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/i55_logo.png" alt="i55" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/mancskonyha.svg" alt="Mancskonyha" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/melodiak.svg" alt="Melodiak" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/myrkl.svg" alt="Myrkl" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/oc_web.png" alt="OC" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/revi.png" alt="Revital Med" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/stopvill.svg" alt="Stopvill" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+                <img src="ügyfél logok/vaszonkep-manufaktura.svg" alt="Vászonkép" style="height: 60px;" class="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300 pointer-events-none">
+            </div>
+        </div>
+    </section>
+
+    <!-- 04 - PAIN SZEKCIÓ (Masonry/Bento stílus) -->
+    <section class="py-32 bg-transparent relative z-10 overflow-hidden" id="fajdalompontok">
+        <div class="absolute inset-0 bg-zinc-950/40 pointer-events-none -z-10"></div>
+        <!-- Dekor háttérvonalak -->
+        <div class="absolute inset-0 pointer-events-none stroke-zinc-100" style="background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 1.6rem 1.6rem;"></div>
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="max-w-2xl mb-20 gsap-fade-up">
+                <span class="text-mymins-teal font-semibold tracking-wide uppercase text-sm mb-4 block">Felismered magad?</span>
+                <h2 class="font-display text-4xl md:text-5xl font-bold tracking-tight text-zinc-900 mb-6">Ismerős valamelyik?</h2>
+                <p class="text-lg text-zinc-600 leading-relaxed">Ha igen, pontosan tudjuk, miről van szó — és azt is, hogyan lehet kilépni belőle.</p>
+            </div>
+
+            <!-- Bento Grid a fájdalompontokra -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-min">
+                <!-- Card 1 -->
+                <div class="bento-card gsap-stagger-card relative group hover:shadow-diffusion animated-gradient-border flex flex-col">
+                    <div class="w-12 h-12 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-trend-down text-2xl"></i>
+                    </div>
+                    <h3 class="font-display text-xl font-bold text-zinc-900 mb-3">A hirdetések mennek, az eredmény nem jön</h3>
+                    <p class="text-zinc-300 text-sm leading-relaxed">Fizeted a számlákat, de azt sem tudod mire, vagy teljesen feleslegesen, mert nyereséget nem termel a marketinged.</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="bento-card gsap-stagger-card relative group hover:shadow-diffusion animated-gradient-border flex flex-col">
+                    <div class="w-12 h-12 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-video-camera-slash text-2xl"></i>
+                    </div>
+                    <h3 class="font-display text-xl font-bold text-zinc-900 mb-3">Vicces videók, nulla üzleti eredmény</h3>
+                    <p class="text-zinc-300 text-sm leading-relaxed">Jópofák a tartalmak, csak közben alig nézi őket valaki. Ha még néző éppen akad, vevő vagy ügyfél nem igazán.</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="bento-card gsap-stagger-card relative group hover:shadow-diffusion animated-gradient-border flex flex-col">
+                    <div class="w-12 h-12 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-arrows-clockwise text-2xl"></i>
+                    </div>
+                    <h3 class="font-display text-xl font-bold text-zinc-900 mb-3">Mintha minden hónapban a nulláról kellene kezdeni</h3>
+                    <p class="text-zinc-300 text-sm leading-relaxed">Nincs felépített rendszer, skálázható struktúra nem is volt. Ami az előző hónapban még működött, az a mostaniban már bukdácsol.</p>
+                </div>
+                <!-- Card 4 -->
+                <div class="bento-card gsap-stagger-card relative group hover:shadow-diffusion animated-gradient-border flex flex-col">
+                    <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-money text-2xl"></i>
+                    </div>
+                    <h3 class="font-display text-xl font-bold text-zinc-900 mb-3">Rossz döntések gátolják a fejlődést</h3>
+                    <p class="text-zinc-300 text-sm leading-relaxed">Próbáltál már ügynökséget, szabadúszót, ismerőst. Valami mindig hiányzott — az összehangoltság vagy az eredmény.</p>
+                </div>
+                <!-- Card 5 -->
+                <div class="bento-card gsap-stagger-card relative group hover:shadow-diffusion animated-gradient-border flex flex-col">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-cloud-fog text-2xl"></i>
+                    </div>
+                    <h3 class="font-display text-xl font-bold text-zinc-900 mb-3">Nem tudod, mit csinál a marketingesed</h3>
+                    <p class="text-zinc-300 text-sm leading-relaxed">Jobb esetben jön a havi riport, de nem tudod értelmezni, segítséget és következtetéseket nem kapsz. Nincs kijelölt kapcsolattartó, nincs valódi átláthatóság… marad a remény, hogy egyszer jó lesz.</p>
+                </div>
+                <!-- Card 6 -->
+                <div class="bento-card gsap-stagger-card relative group hover:shadow-diffusion animated-gradient-border flex flex-col">
+                    <div class="w-12 h-12 rounded-xl bg-teal-500/10 text-teal-500 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-hourglass-high text-2xl"></i>
+                    </div>
+                    <h3 class="font-display text-xl font-bold text-zinc-900 mb-3">Már régen nem itt kellene tartani, ahol most vagy</h3>
+                    <p class="text-zinc-300 text-sm leading-relaxed">Látod a lehetőséget, kereslet is van arra, amit árulsz, csak éppen a marketinged nem aknázza ki ezt a lehetőséget. Itt az ideje működő rendszert csinálni belőle!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- JS és GSAP az animációkhoz -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.registerPlugin(ScrollTrigger);
+
+            
+
+            
+            // Hero beúszó animációk
+            gsap.from('.gsap-hero-left > *', {
+                y: 30, opacity: 0, duration: 1, stagger: 0.1, ease: 'power3.out', delay: 0.2
+            });
+            gsap.from('.gsap-hero-right', {
+                x: 50, opacity: 0, duration: 1.2, ease: 'power3.out', delay: 0.5
+            });
+
+            // Szekciók fade up
+            gsap.utils.toArray('.gsap-fade-up').forEach(element => {
+                gsap.from(element, {
+                    scrollTrigger: { trigger: element, start: 'top 85%' },
+                    y: 40, opacity: 0, duration: 0.8, ease: 'power2.out'
+                });
+            });
+
+            // Bento kártyák stagger
+            gsap.fromTo('.gsap-stagger-card',
+                { opacity: 0 },
+                {
+                    scrollTrigger: { trigger: '#fajdalompontok .grid', start: 'top 80%' },
+                    opacity: 1, duration: 0.8, stagger: 0.1, ease: 'power2.out'
+                }
+            );
+        });
+    </script>
+
+    <!-- 05 - MEGOLDÁS SZEKCIÓ -->
+    <section class="py-24 lg:py-32 bg-transparent border-t border-white/5 relative z-10 overflow-hidden" id="megoldas">
+        <div class="absolute inset-0 bg-zinc-950/40 pointer-events-none -z-10"></div>
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+            
+            <div class="gsap-sol-left">
+                <span class="inline-block px-4 py-2 rounded-full border border-white/5 bg-zinc-900/40 backdrop-blur-xl shadow-md text-xs font-semibold text-zinc-500 uppercase tracking-widest mb-6">A megoldásunk</span>
+                <h2 class="font-display text-4xl lg:text-5xl font-bold tracking-tight text-zinc-900 mb-6">Ezért hoztuk létre a <span class="whitespace-nowrap">CREW-DO</span> rendszert</h2>
+                <p class="text-xl text-zinc-600 font-light leading-relaxed mb-10 pl-6 border-l-2 border-mymins-teal">
+                    A probléma legtöbbször nem a szándék, hanem a hiányos marketingrendszer: van tartalom, de nincs elérés; van elérés, de nincs vevőszerzés. A CREW-DO-ban minden adott, ami ma a gyors növekedéshez kell: <strong class="text-zinc-900 font-medium">vevőszerző, erős videós tartalom, eredményorientált hirdetéskezelés.</strong>
+                </p>
+
+                <ul class="space-y-8">
+                    <li class="flex items-start gap-4">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-teal-500/10 border border-teal-100 flex items-center justify-center mt-1">
+                            <i class="ph-fill ph-check-circle text-mymins-teal"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-display font-bold text-lg text-zinc-900 mb-1">Egységes stratégia</h4>
+                            <p class="text-zinc-600 text-sm leading-relaxed">A videók és a kampányok ugyanabból a tervből születnek — nem egymástól függetlenül.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-4">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-teal-500/10 border border-teal-100 flex items-center justify-center mt-1">
+                            <i class="ph-fill ph-check-circle text-mymins-teal"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-display font-bold text-lg text-zinc-900 mb-1">Folyamatos visszacsatolás</h4>
+                            <p class="text-zinc-600 text-sm leading-relaxed">A hirdetési adatok azonnal beépülnek a következő videóba. Ez az igazi rendszer.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-4">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-teal-500/10 border border-teal-100 flex items-center justify-center mt-1">
+                            <i class="ph-fill ph-check-circle text-mymins-teal"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-display font-bold text-lg text-zinc-900 mb-1">Kivételes átláthatóság</h4>
+                            <p class="text-zinc-600 text-sm leading-relaxed">Kijelölt kapcsolattartó, rendszeres riportok — mindig tudod, mi zajlik és miért.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-4">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-teal-500/10 border border-teal-100 flex items-center justify-center mt-1">
+                            <i class="ph-fill ph-check-circle text-mymins-teal"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-display font-bold text-lg text-zinc-900 mb-1">Skálázható struktúra</h4>
+                            <p class="text-zinc-600 text-sm leading-relaxed">Nem egyszeri kampány. Olyan rendszert építünk, ami hónapról hónapra erősödik.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="gsap-sol-right bento-card relative group hover:shadow-diffusion animated-gradient-border flex flex-col">
+                <span class="text-xs font-mono font-medium text-zinc-400 uppercase tracking-widest mb-6 block text-center">CrewDo Egyenlet</span>
+                
+                <div class="space-y-4 font-display text-lg lg:text-xl font-medium text-zinc-700">
+                    <div class="flex items-center justify-between p-5 bg-zinc-800/50 rounded-2xl border border-white/5">
+                        <span class="flex items-center gap-3"><i class="ph-fill ph-tiktok-logo text-zinc-900"></i> Shortform videók</span>
+                        <span class="w-2 h-2 rounded-full bg-teal-400"></span>
+                    </div>
+                    <div class="flex items-center justify-center text-zinc-300"><i class="ph ph-plus text-2xl"></i></div>
+                    
+                    <div class="flex items-center justify-between p-5 bg-zinc-800/50 rounded-2xl border border-white/5">
+                        <span class="flex items-center gap-3"><i class="ph-fill ph-target text-zinc-900"></i> Google, Meta & TikTok hirdetések</span>
+                        <span class="w-2 h-2 rounded-full bg-teal-400"></span>
+                    </div>
+                    <div class="flex items-center justify-center text-zinc-300"><i class="ph ph-plus text-2xl"></i></div>
+                    
+                    <div class="flex items-center justify-between p-5 bg-zinc-800/50 rounded-2xl border border-white/5">
+                        <span class="flex items-center gap-3"><i class="ph-fill ph-strategy text-zinc-900"></i> Összehangolt kampánystratégia</span>
+                        <span class="w-2 h-2 rounded-full bg-teal-400"></span>
+                    </div>
+                    <div class="flex items-center justify-center text-zinc-300"><i class="ph ph-plus text-2xl"></i></div>
+                    
+                    <div class="flex items-center justify-between p-5 bg-zinc-800/50 rounded-2xl border border-white/5">
+                        <span class="flex items-center gap-3"><i class="ph-fill ph-chart-line-up text-zinc-900"></i> Folyamatos optimalizálás</span>
+                        <span class="w-2 h-2 rounded-full bg-teal-400"></span>
+                    </div>
+                </div>
+
+                <div class="mt-8 pt-8 border-t border-white/5">
+                    <div class="p-6 bg-zinc-900 text-white rounded-2xl text-center shadow-lg transform hover:-translate-y-1 transition-transform">
+                        <span class="font-display text-2xl lg:text-3xl font-bold">= Kiszámítható növekedés</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CTG BUTTON -->
+            <div class="col-span-1 lg:col-span-2 w-full flex justify-center text-center mt-10 md:mt-16">
+                <a href="#form" class="magnetic-btn relative overflow-hidden inline-flex items-center justify-center bg-white font-semibold px-8 py-4 rounded-full group outline outline-1 outline-white/10 shadow-[0_0_30px_rgba(255,255,255,0.1)] transition-all">
+                    <span class="w-[800px] h-[800px] rounded-[100%] absolute bottom-0 left-0 -translate-x-full ease-out duration-700 transition-all translate-y-full mb-9 ml-9 group-hover:ml-0 group-hover:mb-32 group-hover:translate-x-0 bg-mymins-teal"></span>
+                    <span class="relative z-10 w-full text-center text-black transition-colors duration-300 ease-in-out group-hover:text-black">Kérem az árajánlatot</span>
+                </a>
+            </div>
+            
+        </div>
+    </section>
+
+    <!-- 06 - CSOMAG TARTALMA SZEKCIÓ -->
+    <section class="py-24 lg:py-32 bg-transparent relative z-10 overflow-hidden" id="csomag">
+        <!-- Dekor háttérvonalak -->
+        <div class="absolute inset-0 pointer-events-none stroke-zinc-100" style="background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 1.6rem 1.6rem;"></div>
+
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-20 gsap-fade-up">
+                <span class="text-yours-rose font-semibold tracking-wide uppercase text-sm mb-4 block">A csomag tartalma</span>
+                <h2 class="font-display text-4xl md:text-5xl font-bold tracking-tight text-zinc-900 mb-6">Két csapat, egy rendszer.<br/>Minden, ami kell.</h2>
+                <p class="text-lg text-zinc-600 leading-relaxed">Pontosan tudod, kit hívsz, ki miért felel — és mi az, ami összeköti a kettőt.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+                <!-- YOURS Panel -->
+                <div class="bento-card relative group hover:shadow-diffusion animated-gradient-border flex flex-col">
+                    <!-- Csapatfotó -->
+                    <div class="w-full aspect-[16/10] sm:aspect-[4/3] lg:aspect-[16/10] mb-8 rounded-xl overflow-hidden relative z-10">
+                        <img src="Yours_kozoskep.JPG" alt="Csapatfotó" class="w-full h-full object-cover object-[center_40%] opacity-90 grayscale-[30%] group-hover:grayscale-0 group-hover:scale-[1.03] transition-all duration-1000">
+                        <div class="absolute inset-0 bg-zinc-900/10 hover:bg-transparent transition-colors pointer-events-none"></div>
+                    </div>
+                    
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-yours-rose/10 rounded-bl-[100px] -mr-8 -mt-8 transition-transform group-hover:scale-110 pointer-events-none"></div>
+                    <div class="mb-10 relative z-10">
+                        <img src="cropped-rovid_logo-feher.png" alt="YOURS Creative" class="h-10 object-contain mb-4">
+                        <h3 class="font-display tracking-tight text-2xl font-bold text-zinc-900 mb-2">Videógyártás & organikus jelenlét</h3>
+                        <p class="text-sm font-mono text-zinc-500">"Minden, ami látható és meghallgatható."</p>
+                    </div>
+
+                    <ul class="space-y-5">
+                        <li class="flex items-start gap-4">
+                            <i class="ph-fill ph-check-circle text-yours-rose text-lg"></i>
+                            <span class="text-zinc-700 text-sm leading-relaxed"><strong class="font-semibold text-zinc-900">Havi 8 db shortform videó</strong> — Hirdetésre és organikus növekedésre optimalizálva.</span>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <i class="ph-fill ph-check-circle text-yours-rose text-lg"></i>
+                            <span class="text-zinc-700 text-sm leading-relaxed"><strong class="font-semibold text-zinc-900">Scriptírás</strong> — Teljes forgatókönyv: mit mondunk, mit mutatunk.</span>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <i class="ph-fill ph-check-circle text-yours-rose text-lg"></i>
+                            <span class="text-zinc-700 text-sm leading-relaxed"><strong class="font-semibold text-zinc-900">Szereplők biztosítása</strong> — Saját arcok, narrátorok, ha nem akarsz szerepelni.</span>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <i class="ph-fill ph-check-circle text-yours-rose text-lg"></i>
+                            <span class="text-zinc-700 text-sm leading-relaxed"><strong class="font-semibold text-zinc-900">TikTok menedzsment</strong> — Posztolás, profilépítés a trendekhez igazítva.</span>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <i class="ph-fill ph-check-circle text-yours-rose text-lg"></i>
+                            <span class="text-zinc-700 text-sm leading-relaxed"><strong class="font-semibold text-zinc-900">Vágás + effektek</strong> — Profi utómunka minden videóhoz feliratokkal.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- MyMins Panel -->
+                <div class="bento-card text-white relative group hover:shadow-diffusion animated-gradient-border flex flex-col">
+                    <!-- Csapatfotó -->
+                    <div class="w-full aspect-[16/10] sm:aspect-[4/3] lg:aspect-[16/10] mb-8 rounded-xl overflow-hidden relative z-10">
+                        <img src="mymins_kozos_kep.webp" alt="Csapatfotó" class="w-full h-full object-cover object-[center_10%] opacity-90 grayscale-[30%] group-hover:grayscale-0 group-hover:scale-[1.03] transition-all duration-1000">
+                        <div class="absolute inset-0 bg-zinc-900/10 hover:bg-transparent transition-colors pointer-events-none"></div>
+                    </div>
+                    
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-mymins-teal/20 rounded-bl-[100px] -mr-8 -mt-8 transition-transform group-hover:scale-110 pointer-events-none"></div>
+                    <div class="mb-10 relative z-10">
+                        <img src="mymins logo.svg" alt="MyMins" class="h-10 object-contain invert brightness-0 mb-4 opacity-90">
+                        <h3 class="font-display tracking-tight text-2xl font-bold text-white mb-2">Performance marketing & Ads</h3>
+                        <p class="text-sm font-mono text-zinc-400">"Minden, ami mérhető eredményt hoz."</p>
+                    </div>
+
+                    <ul class="space-y-5">
+                        <li class="flex items-start gap-4">
+                            <i class="ph-fill ph-check-circle text-mymins-teal text-lg"></i>
+                            <span class="text-zinc-300 text-sm leading-relaxed"><strong class="font-semibold text-white">Google Ads</strong> — Valódi vásárlókat hozó kampányok, nem csak kattintást.</span>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <i class="ph-fill ph-check-circle text-mymins-teal text-lg"></i>
+                            <span class="text-zinc-300 text-sm leading-relaxed"><strong class="font-semibold text-white">Meta Ads (FB+IG)</strong> — A YOURS videóira építve, célirányos statikusokkal.</span>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <i class="ph-fill ph-check-circle text-mymins-teal text-lg"></i>
+                            <span class="text-zinc-300 text-sm leading-relaxed"><strong class="font-semibold text-white">TikTok Ads</strong> — A TikTok algoritmusát maximálisan kihasználva.</span>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <i class="ph-fill ph-check-circle text-mymins-teal text-lg"></i>
+                            <span class="text-zinc-300 text-sm leading-relaxed"><strong class="font-semibold text-white">Remarketing</strong> — Visszahozzuk a korábbi látogatókat a döntési pontokon.</span>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <i class="ph-fill ph-check-circle text-mymins-teal text-lg"></i>
+                            <span class="text-zinc-300 text-sm leading-relaxed"><strong class="font-semibold text-white">Skálázási stratégia</strong> — A nyereségre fókuszálva növeljük a költést.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="mt-16 text-center flex flex-col items-center">
+                <a href="#form" class="magnetic-btn relative overflow-hidden inline-flex items-center justify-center bg-white font-semibold px-8 py-4 rounded-full group outline outline-1 outline-white/10 shadow-[0_0_30px_rgba(255,255,255,0.1)] transition-all">
+                    <span class="w-[800px] h-[800px] rounded-[100%] absolute bottom-0 left-0 -translate-x-full ease-out duration-700 transition-all translate-y-full mb-9 ml-9 group-hover:ml-0 group-hover:mb-32 group-hover:translate-x-0 bg-mymins-teal"></span>
+                    <span class="relative z-10 w-full text-center text-black transition-colors duration-300 ease-in-out group-hover:text-black">👉 Kérem a részletes árajánlatot és csomaginfót</span>
+                </a>
+                <p class="text-xs text-zinc-500 mt-4 tracking-wide font-medium">30 PERCES INGYENES KONZULTÁCIÓ — Mutatjuk, hogy néz ki nálad.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 07 - FOLYAMAT SZEKCIÓ -->
+    <section class="py-24 lg:py-32 bg-transparent text-white relative z-10 overflow-hidden" id="folyamat">
+        <div class="absolute inset-0 bg-zinc-950/60 pointer-events-none -z-10"></div>
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-20 gsap-fade-up">
+                <span class="text-mymins-teal font-mono tracking-widest text-xs mb-4 block uppercase border-b border-zinc-800 pb-2 inline-block">Hogyan dolgozunk?</span>
+                <h2 class="font-display text-4xl font-bold tracking-tight text-white mb-6">5 lépés a kiszámítható növekedésig</h2>
+                <p class="text-zinc-400">Nincs kalandortúra. Pontosan tudod, mikor mi történik, és kivel kell egyeztetned.</p>
+            </div>
+            
+            <div class="relative">
+                <div class="hidden md:block absolute top-[28px] left-[40px] right-[40px] h-[2px] bg-zinc-800">
+                    <div class="h-full bg-teal-400 w-0 gsap-progress-line"></div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-10">
+                    <div class="relative gsap-step text-center group">
+                        <div class="w-14 h-14 rounded-full bg-zinc-950 border-2 border-zinc-800 flex items-center justify-center font-mono font-bold text-xl text-zinc-500 mb-6 mx-auto relative z-10 group-hover:border-teal-400 group-hover:text-teal-400 transition-colors">1</div>
+                        <h4 class="font-display font-bold text-lg mb-2">Audit</h4>
+                        <p class="text-xs text-zinc-400">Piac, múlt és célok felmérése.</p>
+                    </div>
+                    <div class="relative gsap-step text-center group">
+                        <div class="w-14 h-14 rounded-full bg-zinc-950 border-2 border-zinc-800 flex items-center justify-center font-mono font-bold text-xl text-zinc-500 mb-6 mx-auto relative z-10 group-hover:border-teal-400 group-hover:text-teal-400 transition-colors">2</div>
+                        <h4 class="font-display font-bold text-lg mb-2">Stratégia</h4>
+                        <p class="text-xs text-zinc-400">Közös video- & kampányterv.</p>
+                    </div>
+                    <div class="relative gsap-step text-center group">
+                        <div class="w-14 h-14 rounded-full bg-zinc-950 border-2 border-zinc-800 flex items-center justify-center font-mono font-bold text-xl text-zinc-500 mb-6 mx-auto relative z-10 group-hover:border-teal-400 group-hover:text-teal-400 transition-colors">3</div>
+                        <h4 class="font-display font-bold text-lg mb-2">Kivitelezés</h4>
+                        <p class="text-xs text-zinc-400">Azonnali integrált start.</p>
+                    </div>
+                    <div class="relative gsap-step text-center group">
+                        <div class="w-14 h-14 rounded-full bg-zinc-950 border-2 border-zinc-800 flex items-center justify-center font-mono font-bold text-xl text-zinc-500 mb-6 mx-auto relative z-10 group-hover:border-teal-400 group-hover:text-teal-400 transition-colors">4</div>
+                        <h4 class="font-display font-bold text-lg mb-2">Mérés</h4>
+                        <p class="text-xs text-zinc-400">Heti szintű adat finomhangolás.</p>
+                    </div>
+                    <div class="relative gsap-step text-center group">
+                        <div class="w-14 h-14 rounded-full bg-zinc-950 border-2 border-zinc-800 flex items-center justify-center font-mono font-bold text-xl text-zinc-500 mb-6 mx-auto relative z-10 group-hover:border-teal-400 group-hover:text-teal-400 transition-colors">5</div>
+                        <h4 class="font-display font-bold text-lg mb-2">Skálázás</h4>
+                        <p class="text-xs text-zinc-400">Nyereség fókuszú növelés.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 08 - EREDMÉNYEK (Metrics) -->
+    <section class="py-24 lg:py-32 bg-transparent relative z-10 overflow-hidden" id="eredmenyek">
+        <div class="absolute inset-0 bg-zinc-950/40 pointer-events-none -z-10"></div>
+        <!-- Dekor háttérvonalak -->
+        <div class="absolute inset-0 pointer-events-none stroke-zinc-100" style="background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 1.6rem 1.6rem;"></div>
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 gsap-fade-up">
+                <div class="max-w-xl">
+                    <span class="text-zinc-400 font-mono font-semibold tracking-widest text-xs mb-4 block uppercase border-b border-white/5 pb-2 inline-block">Eredmények</span>
+                    <h2 class="font-display text-4xl font-bold tracking-tight text-white">Nem ígéretek — valódi számok.</h2>
+                </div>
+                <p class="text-zinc-300 max-w-sm">Két konkrét eset. Valódi vállalkozások. Mérhető eredmények az összehangolt rendszer erejével.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+                <!-- Eset 1 -->
+                <div class="bento-card relative group hover:shadow-diffusion animated-gradient-border flex flex-col">
+                    <div class="mb-8 border-b border-white/5 pb-8 flex-grow relative z-10">
+                        <div class="inline-flex px-3 py-1 bg-zinc-800/50 rounded-md text-zinc-300 text-xs font-mono mb-6">#01 Webshop e-kereskedelem</div>
+                        <h3 class="font-display text-2xl font-bold text-white mb-4 leading-snug">6,6 millió → 27 millió: amikor a marketing a helyére kerül.</h3>
+                        <p class="text-sm text-zinc-300 leading-relaxed mb-6">Májusban indult webshop. Ősszel stratégiai alapokra helyeztük: shortform videók és összehangolt Google + Meta kampányok alkottak egy rendszert. Az eredmény nem váratott magára.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="text-[11px] font-mono px-2 py-1 bg-teal-500/10 text-teal-400 rounded-sm">Shortform videó</span>
+                            <span class="text-[11px] font-mono px-2 py-1 bg-rose-500/10 text-rose-400 rounded-sm">Google Ads</span>
+                            <span class="text-[11px] font-mono px-2 py-1 bg-indigo-500/10 text-indigo-400 rounded-sm">Meta</span>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <span class="text-xs text-zinc-400 block mb-1">Október (Kiindulás)</span>
+                            <div class="font-mono text-2xl font-semibold text-zinc-400">6,6M Ft</div>
+                        </div>
+                        <div>
+                            <span class="text-xs text-zinc-400 block mb-1">November (Egy hónap múlva)</span>
+                            <div class="font-mono text-3xl font-bold text-mymins-teal">27M Ft</div>
+                            <div class="text-xs text-mymins-teal font-medium flex items-center gap-1 mt-1"><i class="ph ph-arrow-up-right"></i> +309% növekedés</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Eset 2 -->
+                <div class="bento-card relative group hover:shadow-diffusion animated-gradient-border flex flex-col">
+                    <div class="mb-8 border-b border-white/5 pb-8 flex-grow relative z-10">
+                        <div class="inline-flex px-3 py-1 bg-zinc-800/50 rounded-md text-zinc-300 text-xs font-mono mb-6">#02 Egyedi ajándékok</div>
+                        <h3 class="font-display text-2xl font-bold text-white mb-4 leading-snug">30 millió feletti hónapok és <br/> 8x ROAS hatékonyság.</h3>
+                        <p class="text-sm text-zinc-300 leading-relaxed mb-6">Az ügyfél hirdetései előző évben 3,2x ROAS-on futottak. Átstrukturáltuk a kampányokat, összehangoltuk a forgalmat a Meta és Google között, majd bevezettük a remarketing rendszert.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="text-[11px] font-mono px-2 py-1 bg-red-500/10 text-red-400 rounded-sm">Meta skálázás</span>
+                            <span class="text-[11px] font-mono px-2 py-1 bg-blue-500/10 text-blue-400 rounded-sm">Remarketing</span>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <span class="text-xs text-zinc-400 block mb-1">Előző év (Meta ROAS)</span>
+                            <div class="font-mono text-2xl font-semibold text-zinc-400">3,2x</div>
+                            <div class="text-xs text-zinc-400">(15,9M bevételért)</div>
+                        </div>
+                        <div>
+                            <span class="text-xs text-zinc-400 block mb-1">Velünk (Google ROAS)</span>
+                            <div class="font-mono text-3xl font-bold text-yours-rose">~8x</div>
+                            <div class="text-xs text-yours-rose font-medium flex items-center gap-1 mt-1"><i class="ph ph-trend-up"></i> Ugyanakkora büdzséből</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 08b - ÁR SZEKCIÓ -->
+    <section class="py-24 lg:py-32 bg-transparent relative z-10" id="ar">
+        <div class="absolute inset-0 bg-zinc-950/40 pointer-events-none -z-10"></div>
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+            
+            <div class="gsap-fade-up">
+                <span class="text-mymins-red font-mono font-semibold tracking-widest text-xs mb-4 block uppercase border-b border-white/5 pb-2 inline-block">Limitált kapacitás / Befektetés</span>
+                <h2 class="font-display text-4xl lg:text-5xl font-bold tracking-tight text-white mb-6">Ez nem költség. <br/>Ez egy növekedési rendszer havi díja.</h2>
+                <p class="text-lg text-zinc-300 mb-8 leading-relaxed">
+                    Kapsz egy teljes csapatot, összehangolt stratégiát, heti szintű optimalizálást — és egy rendszert, ami hónapról hónapra erősödik.
+                </p>
+                
+                <div class="flex items-center gap-4 bg-zinc-800/30 p-6 rounded-2xl border border-white/5 mb-8">
+                    <i class="ph-fill ph-target text-3xl text-mymins-teal"></i>
+                    <p class="text-sm font-medium text-zinc-300">Nem ígérünk csodát mindenkinek! Csak olyan vállalkozásokkal dolgozunk együtt, ahol valódi növekedési potenciált látunk, és reálisan tudjuk hozni az elvárt eredményeket.</p>
+                </div>
+            </div>
+
+            <!-- Price Card using Glassmorphism & Micro-animations -->
+            <div class="bento-card relative group hover:shadow-diffusion animated-gradient-border flex flex-col">
+                <div class="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                <div class="relative z-10">
+                    <div class="flex items-center justify-between border-b border-zinc-800 pb-8 mb-8">
+                        <div>
+                            <h3 class="font-display text-2xl font-bold text-white mb-2">CrewDo Csomag</h3>
+                            <p class="text-zinc-400 text-sm">A teljes MyMins + YOURS arzenál</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="block text-4xl font-mono font-bold text-white">490 000</span>
+                            <span class="text-zinc-400 text-sm uppercase tracking-wider">Ft + áfa / hó</span>
+                        </div>
+                    </div>
+
+                    <ul class="space-y-4 mb-10 text-sm text-zinc-300">
+                        <li class="flex items-start gap-4"><i class="ph ph-check text-mymins-teal mt-0.5"></i> 8 db minőségi shortform videó (hirdetés+organikus)</li>
+                        <li class="flex items-start gap-4"><i class="ph ph-check text-mymins-teal mt-0.5"></i> Google, Meta és TikTok kampánykezelés</li>
+                        <li class="flex items-start gap-4"><i class="ph ph-check text-mymins-teal mt-0.5"></i> TikTok profil menedzsment és trendkutatás</li>
+                        <li class="flex items-start gap-4"><i class="ph ph-check text-mymins-teal mt-0.5"></i> Összehangolt kampánystratégia és heti optimalizálás</li>
+                        <li class="flex items-start gap-4"><i class="ph ph-check text-mymins-teal mt-0.5"></i> Kijelölt kapcsolattartó és átlátható riportolás</li>
+                    </ul>
+
+                    <a href="#form" class="magnetic-btn relative overflow-hidden inline-flex items-center justify-center w-full bg-white font-semibold px-8 py-4 rounded-xl group transition-all">
+                        <span class="w-[1200px] h-[800px] rounded-[100%] absolute bottom-0 left-0 -translate-x-full ease-out duration-700 transition-all translate-y-full mb-9 ml-9 group-hover:ml-0 group-hover:mb-32 group-hover:translate-x-0 bg-mymins-teal"></span>
+                        <span class="relative z-10 w-full text-center text-black transition-colors duration-300 ease-in-out group-hover:text-black">Szeretném a CrewDo csomagot</span>
+                    </a>
+                    <p class="text-center text-xs text-zinc-500 mt-4 leading-tight">Szűrjük az ügyfeleket. Ha úgy látjuk, ez nem a legjobb megoldás számodra, őszintén jelezzük a konzultáción.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- 09 & 10 - DIFFERENCIÁLÁS ÉS KINEK VALÓ -->
+    <section class="py-24 lg:py-32 bg-transparent relative z-10" id="kulonbsegek">
+        <div class="absolute inset-0 bg-zinc-950/40 pointer-events-none -z-10"></div>
+        <div class="absolute inset-0 pointer-events-none" style="background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 1.6rem 1.6rem;"></div>
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
+            
+            <!-- CrewDo vs Tipikus táblázat (Bento stílusban) -->
+            <div>
+                <span class="text-zinc-500 font-mono tracking-widest text-xs mb-4 block uppercase border-b border-white/5 pb-2">Differenciálás</span>
+                <h2 class="font-display text-4xl font-bold tracking-tight text-white mb-8">Mi különböztet meg minket?</h2>
+                
+                <div class="bento-card relative group hover:shadow-diffusion animated-gradient-border flex flex-col">
+                    <div class="grid grid-cols-12 bg-zinc-800/80 text-zinc-300 text-xs font-mono font-semibold uppercase tracking-wider py-4 px-6 border-b border-white/5">
+                        <div class="col-span-6">Mit kapsz?</div>
+                        <div class="col-span-3 text-center">Tipikus</div>
+                        <div class="col-span-3 text-center text-mymins-teal">CrewDo</div>
+                    </div>
+                    <!-- Rows -->
+                    <div class="grid grid-cols-12 items-center py-4 px-6 border-b border-white/5 hover:bg-zinc-800/50 transition-colors">
+                        <div class="col-span-6 text-sm font-medium text-zinc-300">Kialakított működési rendszer a gyors és profi teljesítéshez</div>
+                        <div class="col-span-3 text-center text-zinc-300"><i class="ph-bold ph-x"></i></div>
+                        <div class="col-span-3 text-center text-mymins-teal"><i class="ph-bold ph-check"></i></div>
+                    </div>
+                    <div class="grid grid-cols-12 items-center py-4 px-6 border-b border-white/5 hover:bg-zinc-800/50 transition-colors">
+                        <div class="col-span-6 text-sm font-medium text-zinc-300">Transzparens kommunikáció és kiszámítható együttműködés</div>
+                        <div class="col-span-3 text-center text-zinc-300"><i class="ph-bold ph-x"></i></div>
+                        <div class="col-span-3 text-center text-mymins-teal"><i class="ph-bold ph-check"></i></div>
+                    </div>
+                    <div class="grid grid-cols-12 items-center py-4 px-6 border-b border-white/5 hover:bg-zinc-800/50 transition-colors">
+                        <div class="col-span-6 text-sm font-medium text-zinc-300">Kiemelkedő gyorsaság egyedi fejlesztésű, AI-támogatott munkafolyamatokkal</div>
+                        <div class="col-span-3 text-center text-zinc-300"><i class="ph-bold ph-x"></i></div>
+                        <div class="col-span-3 text-center text-mymins-teal"><i class="ph-bold ph-check"></i></div>
+                    </div>
+                    <div class="grid grid-cols-12 items-center py-4 px-6 border-b border-white/5 hover:bg-zinc-800/50 transition-colors">
+                        <div class="col-span-6 text-sm font-medium text-zinc-300">Shortform videógyártás és PPC-kezelés egy szervezés alatt</div>
+                        <div class="col-span-3 text-center text-zinc-300"><i class="ph-bold ph-x"></i></div>
+                        <div class="col-span-3 text-center text-mymins-teal"><i class="ph-bold ph-check"></i></div>
+                    </div>
+                    <div class="grid grid-cols-12 items-center py-4 px-6 border-b border-white/5 hover:bg-zinc-800/50 transition-colors">
+                        <div class="col-span-6 text-sm font-medium text-zinc-300">Profi tartalomgyártók és performance szakértők közös rendszerben</div>
+                        <div class="col-span-3 text-center text-zinc-300"><i class="ph-bold ph-x"></i></div>
+                        <div class="col-span-3 text-center text-mymins-teal"><i class="ph-bold ph-check"></i></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fit check -->
+            <div>
+                <span class="text-zinc-500 font-mono tracking-widest text-xs mb-4 block uppercase border-b border-white/5 pb-2">Fit Check</span>
+                <h2 class="font-display text-4xl font-bold tracking-tight text-white mb-8">Kinek igen, kinek nem?</h2>
+                
+                <div class="space-y-6">
+                    <div class="bento-card relative group hover:shadow-diffusion animated-gradient-border flex flex-col">
+                        <h4 class="font-display font-bold text-teal-400 text-lg mb-4 flex items-center gap-2"><i class="ph-fill ph-check-circle text-teal-500"></i> Ajánlott</h4>
+                        <ul class="space-y-3 text-sm text-teal-200/80">
+                            <li>• Webshopoknak és szolgáltatóknak, akik stabil növekedést akarnak.</li>
+                            <li>• Cégeknek, akik belefutottak a rossz marketing költségeibe.</li>
+                            <li>• Akik tisztában vannak vele, hogy a marketing befektetés.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bento-card relative group hover:shadow-diffusion animated-gradient-border flex flex-col">
+                        <h4 class="font-display font-bold text-red-400 text-lg mb-4 flex items-center gap-2"><i class="ph-fill ph-x-circle text-red-500"></i> Nem való</h4>
+                        <ul class="space-y-3 text-sm text-red-200/80">
+                            <li>• Aki a "jó bornak nem kell cégér" elvben hisz.</li>
+                            <li>• Aki az "ismerősöm megcsinálja okosba" rendszert preferálja.</li>
+                            <li>• Aki instant varázslatot vár az ügynökségtől befektetett energia nélkül.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- 11 - CSAPATOK SZEKCIÓ -->
+    <section class="py-24 lg:py-32 bg-transparent border-t border-zinc-800 relative z-10 overflow-hidden" id="csapatok">
+        <div class="absolute inset-0 bg-zinc-950/60 pointer-events-none -z-10"></div>
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-20 gsap-fade-up">
+                <span class="text-zinc-500 font-mono tracking-widest text-xs mb-4 block uppercase border-b border-zinc-800 pb-2 inline-block">A Csapatok</span>
+                <h2 class="font-display text-4xl font-bold tracking-tight text-white mb-6">Kik vagyunk mi?</h2>
+                <p class="text-zinc-400">Két önálló szakértői csapat — egy közös célért. Nem outsource-olunk, nem subcontractolunk: amit vállalunk, azt mi csináljuk.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+                <!-- YOURS Team -->
+                <div class="bento-card relative group hover:shadow-diffusion animated-gradient-border flex flex-col gsap-fade-up">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-yours-rose/10 rounded-bl-[100px] -mr-8 -mt-8 transition-transform group-hover:scale-110 pointer-events-none"></div>
+                    <img src="cropped-rovid_logo-feher.png" alt="YOURS Creative" class="h-8 w-fit object-contain mb-8 opacity-80 filter grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500 relative z-10">
+                    <h3 class="font-display text-2xl font-bold text-white mb-4">Shortform & Content</h3>
+                    <p class="text-sm text-zinc-400 leading-relaxed mb-8 italic">Figyelemfelkeltő vizualitás és stratégiai tartalomgyártás. A márkád arca és hangja a közösségi médiában.</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3 text-sm text-zinc-300"><i class="ph-fill ph-video-camera text-yours-rose"></i> Havi 8 db shortform videó</li>
+                        <li class="flex items-center gap-3 text-sm text-zinc-300"><i class="ph-fill ph-note-pencil text-yours-rose"></i> Scriptírás & Forgatókönyv</li>
+                        <li class="flex items-center gap-3 text-sm text-zinc-300"><i class="ph-fill ph-users text-yours-rose"></i> Szereplők & Narráció</li>
+                        <li class="flex items-center gap-3 text-sm text-zinc-300"><i class="ph-fill ph-tiktok-logo text-yours-rose"></i> TikTok & Reels menedzsment</li>
+                    </ul>
+                </div>
+
+                <!-- MyMins Team -->
+                <div class="bento-card relative group hover:shadow-diffusion animated-gradient-border flex flex-col gsap-fade-up">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-mymins-teal/20 rounded-bl-[100px] -mr-8 -mt-8 transition-transform group-hover:scale-110 pointer-events-none"></div>
+                    <img src="mymins logo.svg" alt="MyMins" class="h-8 w-fit object-contain invert brightness-0 mb-8 opacity-80 filter grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500 relative z-10">
+                    <h3 class="font-display text-2xl font-bold text-white mb-4">Performance & Ads</h3>
+                    <p class="text-sm text-zinc-400 leading-relaxed mb-8 italic">Szigorú adatvezérelt marketing, bevétel fókusszal. Nincs felesleges költség, csak konverzió optimalizált hirdetések.</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3 text-sm text-zinc-300"><i class="ph-fill ph-google-logo text-mymins-teal"></i> Google Ads kampánykezelés</li>
+                        <li class="flex items-center gap-3 text-sm text-zinc-300"><i class="ph-fill ph-meta-logo text-mymins-teal"></i> Meta & TikTok hirdetések</li>
+                        <li class="flex items-center gap-3 text-sm text-zinc-300"><i class="ph-fill ph-arrow-u-up-left text-mymins-teal"></i> Remarketing rendszer felépítése</li>
+                        <li class="flex items-center gap-3 text-sm text-zinc-300"><i class="ph-fill ph-chart-line-up text-mymins-teal"></i> Skálázási stratégia & Folyamatos elemzés</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- 13 - GARANCIA (4 kártya) -->
+    <section class="py-24 bg-transparent border-y border-white/5 relative z-10 overflow-hidden">
+        <div class="absolute inset-0 pointer-events-none" style="background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 1.6rem 1.6rem;"></div>
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="font-display text-3xl font-bold text-zinc-900 mb-4">Nincs kockázat a döntésben.</h2>
+                <p class="text-zinc-600">A közös munka első lépése kockázatmentes.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Card 1 -->
+                <div class="bento-card relative group hover:shadow-diffusion animated-gradient-border flex flex-col items-center text-center">
+                    <div class="w-12 h-12 rounded-xl bg-zinc-500/10 text-zinc-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="ph-fill ph-handshake text-2xl"></i>
+                    </div>
+                    <h4 class="font-bold text-zinc-900 mb-2">Nincs hosszú kötöttség</h4>
+                    <p class="text-xs text-zinc-500">Könnyű exit, nincsenek éves láncok.</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="bento-card relative group hover:shadow-diffusion animated-gradient-border flex flex-col items-center text-center">
+                    <div class="w-12 h-12 rounded-xl bg-zinc-500/10 text-zinc-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="ph-fill ph-magnifying-glass text-2xl"></i>
+                    </div>
+                    <h4 class="font-bold text-zinc-900 mb-2">Átláthatóság</h4>
+                    <p class="text-xs text-zinc-500">Hozzáférést kapsz minden kampányadathoz.</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="bento-card relative group hover:shadow-diffusion animated-gradient-border flex flex-col items-center text-center">
+                    <div class="w-12 h-12 rounded-xl bg-zinc-500/10 text-zinc-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="ph-fill ph-user-focus text-2xl"></i>
+                    </div>
+                    <h4 class="font-bold text-zinc-900 mb-2">Kijelölt ember</h4>
+                    <p class="text-xs text-zinc-500">Nem email sorban vársz. Fix kapcsolattartó.</p>
+                </div>
+                <!-- Card 4 -->
+                <div class="bento-card relative group hover:shadow-diffusion animated-gradient-border flex flex-col items-center text-center">
+                    <div class="w-12 h-12 rounded-xl bg-teal-500/10 text-mymins-teal flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="ph-fill ph-calendar-plus text-2xl"></i>
+                    </div>
+                    <h4 class="font-bold text-zinc-900 mb-2">Díjmentes start</h4>
+                    <p class="text-xs text-zinc-500">30 perces egyeztetés elköteleződés nélkül.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 14 - FAQ -->
+    <section class="py-24 bg-transparent relative z-10" id="faq">
+        <div class="absolute inset-0 bg-zinc-950/40 pointer-events-none -z-10"></div>
+        <div class="max-w-3xl mx-auto px-6 lg:px-8">
+            <h2 class="font-display text-4xl font-bold text-center text-zinc-900 mb-12">Gyakori Kérdések</h2>
+            <div class="space-y-4">
+                <!-- FAQ Item -->
+                <details class="group border border-white/5 rounded-2xl bg-zinc-900/40 backdrop-blur-xl shadow-md [&_summary::-webkit-details-marker]:hidden">
+                    <summary class="flex items-center justify-between p-6 cursor-pointer font-bold text-zinc-900">
+                        Mikor látok eredményt?
+                        <span class="transition duration-300 group-open:-rotate-180">
+                            <i class="ph ph-caret-down text-zinc-400"></i>
+                        </span>
+                    </summary>
+                    <p class="px-6 pb-6 text-sm text-zinc-600 leading-relaxed border-t border-white/5 pt-4 mt-2">
+                        Általában 4–8 hét alatt már egyértelmű javulás látszik a korábbi eredményekhez képest — a teljes rendszer pedig 2–3 hónap után áll be stabilan. Utána jöhet a skálázás. Ez függ a piactól és az indulási alapoktól.
+                    </p>
+                </details>
+                <!-- FAQ Item -->
+                <details class="group border border-white/5 rounded-2xl bg-zinc-900/40 backdrop-blur-xl shadow-md [&_summary::-webkit-details-marker]:hidden">
+                    <summary class="flex items-center justify-between p-6 cursor-pointer font-bold text-zinc-900">
+                        Kapok rendszeresen információkat a közös munka során?
+                        <span class="transition duration-300 group-open:-rotate-180">
+                            <i class="ph ph-caret-down text-zinc-400"></i>
+                        </span>
+                    </summary>
+                    <p class="px-6 pb-6 text-sm text-zinc-600 leading-relaxed border-t border-white/5 pt-4 mt-2">
+                        Igen. Van egy kijelölt kapcsolattartód, akivel bármikor egyeztethetsz. Tőle mindenről időben kapsz tájékoztatást: mit csinálunk, mikor, és miért. Nálunk minden transzparens.
+                    </p>
+                </details>
+                <!-- FAQ Item -->
+                <details class="group border border-white/5 rounded-2xl bg-zinc-900/40 backdrop-blur-xl shadow-md [&_summary::-webkit-details-marker]:hidden">
+                    <summary class="flex items-center justify-between p-6 cursor-pointer font-bold text-zinc-900">
+                        Mi van, ha nem szeretnék szerepelni a videókban?
+                        <span class="transition duration-300 group-open:-rotate-180">
+                            <i class="ph ph-caret-down text-zinc-400"></i>
+                        </span>
+                    </summary>
+                    <p class="px-6 pb-6 text-sm text-zinc-600 leading-relaxed border-t border-white/5 pt-4 mt-2">
+                        Készíthetünk olyan videókat, ahol nem kell kamera elé állnod — modellekkel, narrációval is dolgozunk. Az ár ezeket is tartalmazza. Sokan indulnak így.
+                    </p>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- 15-16 - FORM SZEKCIÓ -->
+    <section class="py-24 lg:py-32 bg-transparent relative overflow-hidden z-10" id="form">
+        <div class="absolute inset-0 bg-zinc-950/60 pointer-events-none -z-10"></div>
+        <div class="absolute inset-0 pointer-events-none" style="background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 1.6rem 1.6rem;"></div>
+        <!-- Background accents -->
+        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-mymins-teal rounded-full blur-[120px] opacity-20 translate-x-1/2 -translate-y-1/2 pointer-events-none -z-10"></div>
+        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-yours-rose rounded-full blur-[120px] opacity-10 -translate-x-1/2 translate-y-1/2 pointer-events-none -z-10"></div>
+        
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+            
+            <div class="text-white">
+                <span class="inline-flex gap-2 items-center px-3 py-1 bg-red-500/10 border border-red-500/20 text-red-400 rounded-full text-xs font-mono mb-6">
+                    <span class="w-2 h-2 rounded-full bg-red-400 animate-pulse"></span> Limitált férőhely
+                </span>
+                <h2 class="font-display text-4xl lg:text-5xl font-bold tracking-tight mb-6">Jelentkezz a CrewDo <br/>csomagra</h2>
+                <blockquote class="border-l-2 border-white/20 pl-6 my-8 text-xl font-light text-zinc-300 italic">
+                    "Mi felmentjük a vállalkozásodat a pénzszórás vádja alól."
+                </blockquote>
+                <p class="text-zinc-400 leading-relaxed mb-10">Töltsd ki az űrlapot. 24 órán belül felvesszük veled a kapcsolatot egy díjmentes szakmai konzultációra.</p>
+                
+                <ul class="space-y-4 text-sm text-zinc-300">
+                    <li class="flex items-center gap-3"><i class="ph-fill ph-check-circle text-teal-400"></i> Nincs kötelezettségvállalás</li>
+                    <li class="flex items-center gap-3"><i class="ph-fill ph-check-circle text-teal-400"></i> Átlátható árazás</li>
+                    <li class="flex items-center gap-3"><i class="ph-fill ph-check-circle text-teal-400"></i> Az első 30 perc díjmentes</li>
+                </ul>
+            </div>
+
+            <!-- Modern Form Panel -->
+            <div class="bg-zinc-800/50 backdrop-blur-xl border border-white/10 p-8 lg:p-10 rounded-[2rem] shadow-2xl">
+                <form class="space-y-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="space-y-2">
+                            <label class="text-xs font-mono text-zinc-400 uppercase tracking-widest pl-1">Hogyan szólíthatunk?</label>
+                            <input type="text" placeholder="Keresztneved..." class="w-full bg-zinc-900/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-mymins-teal focus:bg-zinc-900 transition-colors">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-mono text-zinc-400 uppercase tracking-widest pl-1">Vállalkozás neve</label>
+                            <input type="text" placeholder="Cégünk neve..." class="w-full bg-zinc-900/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-mymins-teal focus:bg-zinc-900 transition-colors">
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="space-y-2">
+                            <label class="text-xs font-mono text-zinc-400 uppercase tracking-widest pl-1">E-mail cím</label>
+                            <input type="email" placeholder="hello@ceged.hu" class="w-full bg-zinc-900/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-mymins-teal focus:bg-zinc-900 transition-colors">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-mono text-zinc-400 uppercase tracking-widest pl-1">Telefonszám</label>
+                            <input type="tel" placeholder="+36 30 ..." class="w-full bg-zinc-900/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-mymins-teal focus:bg-zinc-900 transition-colors">
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-xs font-mono text-zinc-400 uppercase tracking-widest pl-1">Marketingbüdzsé (havi)</label>
+                        <div class="relative">
+                            <select class="w-full bg-zinc-900/50 border border-white/10 rounded-xl px-4 py-3 text-white appearance-none focus:outline-none focus:border-mymins-teal focus:bg-zinc-900 transition-colors cursor-pointer">
+                                <option value="" disabled selected>Válassz nagyságrendet...</option>
+                                <option value="1">100 000 Ft alatt</option>
+                                <option value="2">100 000 – 300 000 Ft</option>
+                                <option value="3">300 000 – 500 000 Ft</option>
+                                <option value="4">500 000 – 1 000 000 Ft</option>
+                                <option value="5">1 000 000 Ft felett</option>
+                            </select>
+                            <i class="ph ph-caret-down absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none"></i>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-xs font-mono text-zinc-400 uppercase tracking-widest pl-1">Rövid leírás a vállalkozásról</label>
+                        <textarea rows="3" placeholder="Mivel foglalkoztok, mik a főbb kihívások hirdetés terén..." class="w-full bg-zinc-900/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-mymins-teal focus:bg-zinc-900 transition-colors resize-none"></textarea>
+                    </div>
+
+                    <button type="button" class="magnetic-btn relative overflow-hidden inline-flex items-center justify-center w-full bg-white font-bold py-4 rounded-xl group transition-all">
+                        <span class="w-[1200px] h-[800px] rounded-[100%] absolute bottom-0 left-0 -translate-x-full ease-out duration-700 transition-all translate-y-full mb-9 ml-9 group-hover:ml-0 group-hover:mb-32 group-hover:translate-x-0 bg-mymins-teal"></span>
+                        <span class="relative z-10 w-full text-center text-black transition-colors duration-300 ease-in-out group-hover:text-black flex items-center justify-center gap-2">
+                            Beszéljünk 30 percet
+                            <i class="ph-bold ph-arrow-right"></i>
+                        </span>
+                    </button>
+                    
+                    <p class="text-center text-[11px] text-zinc-500 flex items-center justify-center gap-1 mt-4">
+                        <i class="ph-fill ph-lock-key"></i> Adataidat bizalmasan kezeljük.
+                    </p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 bg-zinc-950 text-center border-t border-white/5">
+        <p class="text-xs text-zinc-600 font-mono">© 2026 CrewDo - YOURS Creative × MyMins. Minden jog fenntartva.</p>
+    </footer>
+
+    <!-- Script update block -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Setup Background Beams
+            const beamsCanvas = document.getElementById('bg-beams-canvas');
+            if (beamsCanvas) {
+                const ctx = beamsCanvas.getContext('2d');
+                let beams = [];
+                const MINIMUM_BEAMS = 20;
+
+                // Brand Hues: Teal (~177), Red (~357), Rose (~358)
+                const brandHues = [177, 357, 358];
+
+                function createBeam(width, height) {
+                    const angle = -35 + Math.random() * 10;
+                    return {
+                        x: Math.random() * width * 1.5 - width * 0.25,
+                        y: Math.random() * height * 1.5 - height * 0.25,
+                        width: 30 + Math.random() * 60,
+                        length: height * 2.5,
+                        angle: angle,
+                        speed: 0.6 + Math.random() * 1.2,
+                        opacity: 0.12 + Math.random() * 0.16,
+                        hue: brandHues[Math.floor(Math.random() * brandHues.length)],
+                        pulse: Math.random() * Math.PI * 2,
+                        pulseSpeed: 0.02 + Math.random() * 0.03,
+                    };
+                }
+
+                function updateCanvasSize() {
+                    const dpr = window.devicePixelRatio || 1;
+                    beamsCanvas.width = window.innerWidth * dpr;
+                    beamsCanvas.height = window.innerHeight * dpr;
+                    beamsCanvas.style.width = `${window.innerWidth}px`;
+                    beamsCanvas.style.height = `${window.innerHeight}px`;
+                    ctx.scale(dpr, dpr);
+
+                    const totalBeams = MINIMUM_BEAMS * 1.5;
+                    beams = Array.from({ length: totalBeams }, () =>
+                        createBeam(window.innerWidth, window.innerHeight)
+                    );
+                }
+
+                updateCanvasSize();
+                window.addEventListener('resize', updateCanvasSize);
+
+                function resetBeam(beam, index, totalBeams) {
+                    const column = index % 3;
+                    const spacing = window.innerWidth / 3;
+
+                    beam.y = window.innerHeight + 100;
+                    beam.x = column * spacing + spacing / 2 + (Math.random() - 0.5) * spacing * 0.5;
+                    beam.width = 100 + Math.random() * 100;
+                    beam.speed = 0.5 + Math.random() * 0.4;
+                    beam.hue = brandHues[Math.floor(Math.random() * brandHues.length)];
+                    beam.opacity = 0.2 + Math.random() * 0.1;
+                    return beam;
+                }
+
+                function drawBeam(ctx, beam) {
+                    ctx.save();
+                    ctx.translate(beam.x, beam.y);
+                    ctx.rotate((beam.angle * Math.PI) / 180);
+
+                    const pulsingOpacity = beam.opacity * (0.8 + Math.sin(beam.pulse) * 0.2);
+
+                    const gradient = ctx.createLinearGradient(0, 0, 0, beam.length);
+                    gradient.addColorStop(0, `hsla(${beam.hue}, 85%, 65%, 0)`);
+                    gradient.addColorStop(0.1, `hsla(${beam.hue}, 85%, 65%, ${pulsingOpacity * 0.5})`);
+                    gradient.addColorStop(0.4, `hsla(${beam.hue}, 85%, 65%, ${pulsingOpacity})`);
+                    gradient.addColorStop(0.6, `hsla(${beam.hue}, 85%, 65%, ${pulsingOpacity})`);
+                    gradient.addColorStop(0.9, `hsla(${beam.hue}, 85%, 65%, ${pulsingOpacity * 0.5})`);
+                    gradient.addColorStop(1, `hsla(${beam.hue}, 85%, 65%, 0)`);
+
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(-beam.width / 2, 0, beam.width, beam.length);
+                    ctx.restore();
+                }
+
+                function animate() {
+                    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+                    
+                    const totalBeams = beams.length;
+                    beams.forEach((beam, index) => {
+                        beam.y -= beam.speed;
+                        beam.pulse += beam.pulseSpeed;
+
+                        if (beam.y + beam.length < -100) {
+                            resetBeam(beam, index, totalBeams);
+                        }
+                        drawBeam(ctx, beam);
+                    });
+
+                    requestAnimationFrame(animate);
+                }
+                animate();
+            }
+
+
+            // Sol left/right
+            gsap.from('.gsap-sol-left', {
+                scrollTrigger: { trigger: '#megoldas', start: 'top 75%' },
+                x: -40, opacity: 0, duration: 1, ease: 'power3.out'
+            });
+            gsap.from('.gsap-sol-right', {
+                scrollTrigger: { trigger: '#megoldas', start: 'top 75%' },
+                x: 40, opacity: 0, duration: 1, ease: 'power3.out', delay: 0.2
+            });
+
+            // Folyamat rajzoló vonal & lépések animálása
+            let tlProgress = gsap.timeline({
+                scrollTrigger: {
+                    trigger: '#folyamat',
+                    start: 'top 60%',
+                    end: 'bottom 80%',
+                }
+            });
+            tlProgress.to('.gsap-progress-line', {
+                width: '100%',
+                duration: 1.5,
+                ease: 'power1.inOut'
+            });
+            gsap.from('.gsap-step', {
+                scrollTrigger: { trigger: '#folyamat', start: 'top 60%' },
+                y: 20, opacity: 0, duration: 0.6, stagger: 0.2, ease: 'back.out(1.5)'
+            });
+            // Hero Typewriter Animation
+            const animatedTexts = [
+                "marketing rendszered.",
+                "hirdetési gépezeted.",
+                "videós stratégiád."
+            ];
+            const typeWriterElement = document.getElementById("hero-typewriter");
+            if (typeWriterElement) {
+                let textIndex = 0;
+                let charIndex = 0;
+                let isDeleting = false;
+                
+                function typeWriter() {
+                    const currentText = animatedTexts[textIndex];
+                    
+                    if (isDeleting) {
+                        charIndex--;
+                    } else {
+                        charIndex++;
+                    }
+                    
+                    typeWriterElement.textContent = currentText.substring(0, charIndex);
+                    
+                    let typingSpeed = isDeleting ? 75 : 150;
+                    
+                    if (!isDeleting && charIndex === currentText.length) {
+                        typingSpeed = 2000;
+                        isDeleting = true;
+                    } else if (isDeleting && charIndex === 0) {
+                        isDeleting = false;
+                        textIndex = (textIndex + 1) % animatedTexts.length;
+                        typingSpeed = 500;
+                    }
+                    
+                    setTimeout(typeWriter, typingSpeed);
+                }
+                
+                setTimeout(typeWriter, 1000);
+            }
+        });
+    </script>
+</body>
+</html>
